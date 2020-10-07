@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aurora", "Aurora\Aurora.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Midnight", "Midnight\Midnight.csproj", "{2595EB69-BBED-424C-9C9C-523DAB3C76C3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MidnightTests", "MidnightTests\MidnightTests.csproj", "{06FB2906-D499-4F0F-A891-554B9A8BFE27}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{2595EB69-BBED-424C-9C9C-523DAB3C76C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2595EB69-BBED-424C-9C9C-523DAB3C76C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2595EB69-BBED-424C-9C9C-523DAB3C76C3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06FB2906-D499-4F0F-A891-554B9A8BFE27}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06FB2906-D499-4F0F-A891-554B9A8BFE27}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06FB2906-D499-4F0F-A891-554B9A8BFE27}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06FB2906-D499-4F0F-A891-554B9A8BFE27}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
