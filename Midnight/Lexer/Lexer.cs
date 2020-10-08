@@ -144,14 +144,16 @@ namespace Midnight.Lexer
         /// <summary>
         /// Check if the current token matches the provided regex pattern.
         /// </summary>
-        /// <param name="expected">Regex pattern (will be escaped)</param>
+        /// <param name="expected">Regex pattern</param>
+        /// <param name="literal">Set true to escape regex characters in expected.</param>
         /// <param name="escaped">If the token should be escaped.</param>
         /// <returns>True if match</returns>
-        public bool Inspect(string expected, bool escaped = false)
+        public bool Inspect(string expected, bool literal = false, bool escaped = false)
         {
             if (!InspectEOF())
             {
-                return Regex.Match(CurrenToken.Value, Regex.Escape(expected)).Success && CurrenToken.IsEscaped == escaped;
+                string pattern = literal ? Regex.Escape(expected) : expected;
+                return Regex.Match(CurrenToken.Value, pattern).Success && CurrenToken.IsEscaped == escaped;
             }
             return false;
         }
@@ -194,11 +196,12 @@ namespace Midnight.Lexer
         /// Checks the current token matches the expected pattern. Advances the lexer to the current one if so and returns true.
         /// </summary>
         /// <param name="expected">The pattern to match the token to.</param>
+        /// <param name="literal">Set true to escape regex characters in expected.</param>
         /// <param name="escaped">If the token should be escaped.</param>
         /// <returns>True if matched and advanced. False otherwise.</returns>
-        public bool Consume(string expected, bool escaped = false)
+        public bool Consume(string expected, bool literal = false, bool escaped = false)
         {
-            if (Inspect(expected, escaped))
+            if (Inspect(expected, literal, escaped))
             {
                 Consume();
                 return true;
@@ -215,12 +218,13 @@ namespace Midnight.Lexer
         /// Advances the lexer position until current token matches the expected pattern.
         /// </summary>
         /// <param name="expected">Regex pattern to match token to.</param>
+        /// <param name="literal">Set true to escape regex characters in expected.</param>
         /// <param name="escaped">Is the token escaped.</param>
         /// <returns>List of all tokens consumed</returns>
-        public List<Token> ConsumeUntil(string expected, bool escaped = false)
+        public List<Token> ConsumeUntil(string expected, bool literal = false, bool escaped = false)
         {
             List<Token> res = new List<Token>();
-            while (!Inspect(expected, escaped) && !InspectEOF())
+            while (!Inspect(expected, literal, escaped) && !InspectEOF())
             {
                 res.Add(CurrenToken);
                 mTokenPos++;
@@ -233,7 +237,7 @@ namespace Midnight.Lexer
         /// </summary>
         public void GobbleWhitespace()
         {
-            while (!Inspect(@"\s") && !InspectEOF())
+            while (Inspect(@"\s") && !InspectEOF())
             {
                 Consume();
             }
@@ -250,7 +254,7 @@ namespace Midnight.Lexer
         /// <param name="enclosed">Are all parameters enclosed</param>
         /// <param name="paramnames">Names of the parameters</param>
         /// <returns></returns>
-        public Dictionary<string, string> ConsumeArgList(string startseq = "(", string endseq = ")", string sep = ",", string encseq = "\"", bool enclosed = false, params string[] paramnames)
+        public Dictionary<string, string> ConsumeArgList(string startseq, string endseq, string sep, string encseq, bool enclosed = false, params string[] paramnames)
         {
             Dictionary<string, string> paramvals = new Dictionary<string, string>();
 
@@ -261,7 +265,7 @@ namespace Midnight.Lexer
             foreach (var pname in paramnames)
             {
                 GobbleWhitespace();
-                string paramendmatch = sep;
+                string paramendmatch = pnum < paramnames.Length - 1 ? sep : endseq;
                 if (enclosed)
                 {
                     Consume(encseq);
@@ -274,7 +278,7 @@ namespace Midnight.Lexer
                 {
                     sb.Append(v.Value);
                 }
-                paramvals.Add(paramnames[pnum], sb.ToString());
+                paramvals.Add(paramnames[pnum], sb.ToString().Trim());
 
                 if (enclosed)
                 {
@@ -296,7 +300,25 @@ namespace Midnight.Lexer
             return paramvals;
         }
 
+        /// <summary>
+        /// Advances the lexer state to the endseq. Gets the values for all parameters.
+        /// </summary>
+        /// <param name="paramnames">Names of the parameters</param>
+        /// <returns></returns>
+        public Dictionary<string, string> ConsumeArgList(params string[] paramnames)
+        {
+            return ConsumeArgList("\\(", "\\)", ",", "\'", false, paramnames);
+        }
 
+        /// <summary>
+        /// Advances the lexer state to the endseq. Gets the values for all parameters.
+        /// </summary>
+        /// <param name="paramnames">Names of the parameters</param>
+        /// <returns></returns>
+        public Dictionary<string, string> ConsumeEnclosedArgList(params string[] paramnames)
+        {
+            return ConsumeArgList("\\(", "\\)", ",", "\'", true, paramnames);
+        }
 
 
 

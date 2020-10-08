@@ -4,6 +4,7 @@ using Midnight.Lexer;
 using MidnightTests;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Midnight.Lexer.Tests
@@ -58,7 +59,7 @@ namespace Midnight.Lexer.Tests
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 37, Value = " "} ,
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 38, Value = "("} ,
             };
-         
+
             Assert.IsTrue(golden.AreEqualContent(res));
         }
 
@@ -80,7 +81,7 @@ namespace Midnight.Lexer.Tests
 
             Assert.IsTrue(golden.AreEqualContent(res));
 
-            
+
         }
 
         [TestMethod()]
@@ -105,6 +106,117 @@ namespace Midnight.Lexer.Tests
 
             Assert.IsTrue(golden.AreEqualContent(res));
 
+        }
+
+        [TestMethod()]
+        public void InspectRegexTest()
+        {
+            const string input = @"This is a \test.";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " ", "." });
+
+            Assert.IsTrue(l.Inspect("This"));
+            Assert.IsTrue(l.Inspect(".*"));
+            Assert.IsTrue(l.Inspect(@"\w"));
+            l.Consume();
+            l.Consume();
+            l.Consume();
+            l.Consume();
+            l.Consume();
+            l.Consume();
+            Assert.IsTrue(l.Inspect("test", escaped: true));
+        }
+
+        [TestMethod()]
+        public void InspectEOFTest()
+        {
+            Lexer l = new Lexer();
+            Assert.IsTrue(l.InspectEOF());
+        }
+
+        [TestMethod()]
+        public void PeekTest()
+        {
+            const string input = @"Testing 123.";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " " });
+
+            Assert.IsTrue(l.Peek().Equals(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 0, Value = "Testing" }));
+        }
+
+        [TestMethod()]
+        public void Peek1Test()
+        {
+            const string input = @"Testing 123.";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " " });
+
+            Assert.IsTrue(l.Peek1().Equals(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 7, Value = " " }));
+        }
+
+        [TestMethod()]
+        public void ConsumeTest()
+        {
+            const string input = @"Testing 123.";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " " });
+
+            Assert.IsTrue(l.Consume("T.*ing"));
+            Assert.IsFalse(l.Consume("wrong"));
+        }
+
+        [TestMethod()]
+        public void ConsumeUntilTest()
+        {
+            const string input = @"Testing 123. This too shall pass.";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " ", "." });
+
+            var capture = l.ConsumeUntil(".", true);
+            Assert.AreEqual("Testing 123", string.Join("", capture.Select(p => p.Value)));
+            Assert.AreEqual(l.CurrenToken.Value, ".");
+        }
+
+        [TestMethod()]
+        public void GobbleWhitespaceTest()
+        {
+            const string input = "Line 1:   \t.\r\n and stuff";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " ", "." });
+
+            l.Consume();
+            l.GobbleWhitespace();
+            Assert.IsTrue(l.Consume("1:"));
+            l.GobbleWhitespace();
+            Assert.IsTrue(l.Consume("."));
+            l.GobbleWhitespace();
+            Assert.IsTrue(l.Consume("and"));
+        }
+
+        [TestMethod()]
+        public void ConsumeArgListTest()
+        {
+            const string input = "Method(p1, true, 1234)";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " ", ",", "'", "(", ")" });
+            l.Consume("Method");
+            var args = l.ConsumeArgList("param1", "param2", "param3");
+            Assert.AreEqual("p1", args["param1"]);
+            Assert.AreEqual("true", args["param2"]);
+            Assert.AreEqual("1234", args["param3"]);
+        }
+        
+        [TestMethod()]
+        public void ConsumeEnclosedArgListTest()
+        {
+            const string input = "Method('p1', 'true', '1234')";
+            Lexer l = new Lexer();
+            l.Tokenize(input, new List<string>() { " ", ",", "'", "(", ")" });
+            l.Consume("Method");
+            var args = l.ConsumeEnclosedArgList("param1", "param2", "param3");
+            Assert.AreEqual("p1", args["param1"]);
+            Assert.AreEqual("true", args["param2"]);
+            Assert.AreEqual("1234", args["param3"]);
         }
     }
 }
