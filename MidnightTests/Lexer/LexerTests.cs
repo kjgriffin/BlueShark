@@ -25,7 +25,7 @@ namespace Midnight.Lexer.Tests
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 2, Value = "t"},
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 3, Value = "t"},
             };
-            Assert.IsTrue(golden.AreEqualContent(res));
+            Assert.IsTrue(golden.AreEqualTokenContent(res));
         }
 
         [TestMethod()]
@@ -60,7 +60,7 @@ namespace Midnight.Lexer.Tests
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 38, Value = "("} ,
             };
 
-            Assert.IsTrue(golden.AreEqualContent(res));
+            Assert.IsTrue(golden.AreEqualTokenContent(res));
         }
 
         [TestMethod()]
@@ -79,7 +79,7 @@ namespace Midnight.Lexer.Tests
                 new Token() {IsEscaped = false, LineNumber= 1, SColNumber = 5, Value= "2."},
             };
 
-            Assert.IsTrue(golden.AreEqualContent(res));
+            Assert.IsTrue(golden.AreEqualTokenContent(res));
 
 
         }
@@ -104,7 +104,7 @@ namespace Midnight.Lexer.Tests
                 new Token() {IsEscaped = false, LineNumber = 0, SColNumber = 18, Value = "stuff"},
             };
 
-            Assert.IsTrue(golden.AreEqualContent(res));
+            Assert.IsTrue(golden.AreEqualTokenContent(res));
 
         }
 
@@ -141,7 +141,7 @@ namespace Midnight.Lexer.Tests
             Lexer l = new Lexer();
             l.Tokenize(input, new List<string>() { " " });
 
-            Assert.IsTrue(l.Peek().Equals(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 0, Value = "Testing" }));
+            Assert.IsTrue(l.Peek().Equivalent(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 0, Value = "Testing" }));
         }
 
         [TestMethod()]
@@ -151,7 +151,7 @@ namespace Midnight.Lexer.Tests
             Lexer l = new Lexer();
             l.Tokenize(input, new List<string>() { " " });
 
-            Assert.IsTrue(l.Peek1().Equals(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 7, Value = " " }));
+            Assert.IsTrue(l.Peek1().Equivalent(new Token() { IsEscaped = false, LineNumber = 0, SColNumber = 7, Value = " " }));
         }
 
         [TestMethod()]

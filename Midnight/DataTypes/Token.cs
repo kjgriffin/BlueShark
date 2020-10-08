@@ -33,7 +33,7 @@ namespace Midnight.DataTypes
             return $"{escaped}`{Value}` on {LineNumber} at {SColNumber}";
         }
 
-        public override bool Equals(object obj)
+        public bool Equivalent(object obj)
         {
             Token a = this;
             Token b = obj as Token;
