@@ -1,0 +1,53 @@
+﻿Liturgy() {
+
+P In the name of the Father and the \t Son etc.
+
+C Amen.
+
+P Multiline stuff.
+Will also work here for this. And this too
+shall be great stuff.
+
+P This should also not present problemsn.
+
+C Great!
+C Amen.
+}
+
+// Comment
+
+/* ------ 
+multiline
+comment
+*/ ------
+
+Image(full, "Service Title")
+
+Image(fit, "LSB 802")
+
+Image(liturgy, "liturgy_1")
+
+Video("someone's anthem ")
+
+
+Creed(apostle)
+Creed(nicene)
+Prayer(lords)
+Prayer(morning)
+
+
+Reading("Epistle Lesson", "1 Peter 3:5-17, 21-25")
+
+Sermon('this is the title of the sermon', ", "Rev. Astley" )
+
+LiturgyVerse() {
+
+Line 1.
+Line 2
+
+Line 3; LIne 4
+Line 5.
+
+}
+
+

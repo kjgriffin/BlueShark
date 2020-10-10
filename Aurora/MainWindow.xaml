@@ -8,5 +8,62 @@
         Title="MainWindow" Height="450" Width="800">
     <Grid>
 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Menu>
+                <MenuItem Header="File">
+
+                </MenuItem>
+            </Menu>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StackPanel Orientation="Horizontal">
+                <Button>Test</Button>
+            </StackPanel>
+        </Grid>
+
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="5*"></ColumnDefinition>
+                <ColumnDefinition Width="5"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+            <GridSplitter Grid.Column="3" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+
+            <Grid Grid.Column="0"></Grid>
+            <Grid Grid.Column="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"></RowDefinition>
+                        <RowDefinition Height="5"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                    </Grid.RowDefinitions>
+                    <GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch"></GridSplitter>
+                    <ScrollViewer>
+                        <TextBox Name="tbSource" PreviewKeyDown="tbSourceChangedPreviewKeyDown" TextChanged="tbSourceChanged" Grid.Row="0" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+            <Grid Grid.Column="4">
+                <TextBlock Name="tbhelp"></TextBlock>
+            </Grid>
+
+        </Grid>
+
+        <Grid Grid.Row="3">
+            <StatusBar>
+
+            </StatusBar>
+        </Grid>
     </Grid>
 </Window>

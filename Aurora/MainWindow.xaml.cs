@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Midnight.Compiling;
+using Midnight.Parsers;
 
 namespace Aurora
 {
@@ -20,9 +23,49 @@ namespace Aurora
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        IntellisenseParser IntellisenseParser = new IntellisenseParser();        
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void tbSourceChanged(object sender, TextChangedEventArgs e)
+        {
+            ShowIntellisense();
+        }
+
+        private void ShowIntellisense()
+        {
+            int caretPos = tbSource.SelectionStart;
+            string uptocarret = tbSource.Text.Substring(0, caretPos);
+            var suggestions = IntellisenseParser.GetSuggestions(uptocarret);
+            if (suggestions.success)
+            {
+                StringBuilder sb = new StringBuilder();
+                foreach (var suggestion in suggestions.suggestions)
+                {
+                    sb.AppendLine(suggestion);
+                }
+                tbhelp.Text = sb.ToString();
+            }
+            else
+            {
+                tbhelp.Text = "No help available. Failed to get suggestions";
+            }
+        }
+
+
+        private void tbSourceChangedPreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                {
+                    ShowIntellisense(); 
+                }
+            } 
         }
     }
 }
