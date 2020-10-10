@@ -50,7 +50,7 @@
                     </Grid.RowDefinitions>
                     <GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch"></GridSplitter>
                     <ScrollViewer>
-                        <TextBox Name="tbSource" PreviewKeyDown="tbSourceChangedPreviewKeyDown" TextChanged="tbSourceChanged" Grid.Row="0" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
+                        <TextBox Name="tbSource" PreviewKeyDown="tbSourceChangedPreviewKeyDown" SelectionChanged="tbSourceSelectionChanged" TextChanged="tbSourceChanged" Grid.Row="0" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
                     </ScrollViewer>
                 </Grid>
             </Grid>

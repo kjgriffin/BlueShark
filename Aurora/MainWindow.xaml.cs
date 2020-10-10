@@ -67,5 +67,10 @@ namespace Aurora
                 }
             } 
         }
+
+        private void tbSourceSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            ShowIntellisense();
+        }
     }
 }
