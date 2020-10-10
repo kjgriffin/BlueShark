@@ -25,7 +25,7 @@
 
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <Button>Test</Button>
+                <Button Click="btnBuildClick">Build</Button>
             </StackPanel>
         </Grid>
 

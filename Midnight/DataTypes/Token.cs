@@ -27,6 +27,17 @@ namespace Midnight.DataTypes
         /// </summary>
         public bool IsEscaped { get; set; }
 
+        /// <summary>
+        /// Returns the value of the token. Prefixed with '\' if token is escaped.
+        /// </summary>
+        public string AsText
+        {
+            get
+            {
+                return IsEscaped ? $"\\{Value}" : Value;
+            }
+        }
+
         public override string ToString()
         {
             string escaped = IsEscaped ? "\\" : "";

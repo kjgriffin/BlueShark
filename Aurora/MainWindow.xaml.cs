@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Midnight.Build;
 using Midnight.Compiling;
 using Midnight.Parsers;
 
@@ -71,6 +72,12 @@ namespace Aurora
         private void tbSourceSelectionChanged(object sender, RoutedEventArgs e)
         {
             ShowIntellisense();
+        }
+
+        private void btnBuildClick(object sender, RoutedEventArgs e)
+        {
+            MidnightBuildService buildService = new MidnightBuildService();
+            buildService.BuildProject(tbSource.Text);
         }
     }
 }

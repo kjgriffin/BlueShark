@@ -1,4 +1,5 @@
 ﻿using Midnight.DataTypes;
+using Midnight.LanguageDefinitions;
 using Midnight.Lexing;
 using Midnight.PreProcessor;
 using System;
@@ -28,24 +29,7 @@ namespace Midnight.Parsers
     {
 
 
-        static List<string> Seperators = new List<string>()
-        {
-            Environment.NewLine,
-            " ",
-            ",",
-            ".",
-            "?",
-            ":",
-            ";",
-            "-",
-            "(",
-            ")",
-            "{",
-            "}",
-            "\"",
-            "'"
-        };
-
+        
         Lexer lexer = new Lexer();
         List<string> suggestions;
         List<(string cmdname, ParserCommand func)> Commands;
@@ -62,7 +46,7 @@ namespace Midnight.Parsers
         public (bool success, List<string> suggestions) GetSuggestions(string input)
         {
             suggestions = new List<string>();
-            lexer.Tokenize(input.StripSingleLineComments("//").StripMultiLineComments("/*", "*/"), Seperators);
+            lexer.Tokenize(input.StripSingleLineComments("//").StripMultiLineComments("/*", "*/"), LanguageDefinition.Seperators);
 
             try
             {
