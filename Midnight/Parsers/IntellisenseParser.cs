@@ -1,5 +1,6 @@
 ﻿using Midnight.DataTypes;
 using Midnight.Lexing;
+using Midnight.PreProcessor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -61,7 +62,7 @@ namespace Midnight.Parsers
         public (bool success, List<string> suggestions) GetSuggestions(string input)
         {
             suggestions = new List<string>();
-            lexer.Tokenize(input, Seperators);
+            lexer.Tokenize(input.StripSingleLineComments("//").StripMultiLineComments("/*", "*/"), Seperators);
 
             try
             {

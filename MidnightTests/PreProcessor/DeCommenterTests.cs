@@ -15,7 +15,7 @@ namespace Midnight.PreProcessor.Tests
             const string commentseq = "//";
 
             const string testseq = "This is a test of stuff.\r\n//This too may be a great test.\r\nOn this//line no // more.";
-            const string golden = "This is a test of stuff.\r\n\r\nOn this\r\n";
+            const string golden = "This is a test of stuff.\r\n\r\nOn this";
 
             Assert.AreEqual(golden, testseq.StripSingleLineComments(commentseq));
         }

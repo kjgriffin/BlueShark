@@ -12,20 +12,25 @@ namespace Midnight.PreProcessor
         /// </summary>
         /// <param name="source">Source text to remove comment lines from.</param>
         /// <param name="singlelinecommentseq">Sequence identifying start of single line comment.</param>
-        /// <returns>Source text with single line comments removed. Ends in a newline.</returns>        
+        /// <returns>Source text with single line comments removed.</returns>        
         public static string StripSingleLineComments(this string source, string singlelinecommentseq)
         {
             var lines = source.Split(System.Environment.NewLine);
             StringBuilder sb = new StringBuilder();
+            int lnum = 0;
             foreach (var line in lines)
             {
                 var lineparts = line.Split(singlelinecommentseq, 2, StringSplitOptions.None);
                 sb.Append(lineparts.First());
-                sb.Append(System.Environment.NewLine);
+                if (lnum < lines.Length - 1)
+                {
+                    sb.Append(System.Environment.NewLine);
+                }
+                lnum++;
             }
             return sb.ToString();
         }
-        
+
         /// <summary>
         /// Removes multiline comments.
         /// </summary>
@@ -61,6 +66,6 @@ namespace Midnight.PreProcessor
             sb.Append(work);
             return sb.ToString();
         }
-        
+
     }
 }
