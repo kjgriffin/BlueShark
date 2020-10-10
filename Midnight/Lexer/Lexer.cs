@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media.Animation;
 
-namespace Midnight.Lexer
+namespace Midnight.Lexing
 {
     public class Lexer
     {
@@ -45,6 +45,7 @@ namespace Midnight.Lexer
         public List<Token> Tokenize(string source, List<string> seperators, string escapeseq = @"\")
         {
             mTokens = new List<Token>();
+            mTokenPos = 0;
 
             seperators.Insert(0, escapeseq);
 
@@ -128,6 +129,24 @@ namespace Midnight.Lexer
             }
         }
 
+        /// <summary>
+        /// Gets the last token before EOF. Returns EOF if no tokens.
+        /// </summary>
+        public Token LastToken
+        {
+            get
+            {
+                if (mTokens.Count > 0)
+                {
+                    return mTokens.Last();
+                }
+                else
+                {
+                    return EOF;
+                }
+            }
+        }
+
         public List<string> Messages { get; set; } = new List<string>();
 
 
@@ -142,18 +161,35 @@ namespace Midnight.Lexer
         }
 
         /// <summary>
-        /// Check if the current token matches the provided regex pattern.
+        /// Check if the current token matches the provided pattern.
         /// </summary>
         /// <param name="expected">Regex pattern</param>
-        /// <param name="literal">Set true to escape regex characters in expected.</param>
+        /// <param name="isRegex">Set true if pattern is regex.</param>
         /// <param name="escaped">If the token should be escaped.</param>
         /// <returns>True if match</returns>
-        public bool Inspect(string expected, bool literal = false, bool escaped = false)
+        public bool Inspect(string expected, bool isRegex = false, bool escaped = false)
         {
             if (!InspectEOF())
             {
-                string pattern = literal ? Regex.Escape(expected) : expected;
+                string pattern = isRegex ? expected : Regex.Escape(expected);
                 return Regex.Match(CurrenToken.Value, pattern).Success && CurrenToken.IsEscaped == escaped;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Check if the provided token matches the provided pattern.
+        /// </summary>
+        /// <param name="expected">Regex pattern</param>
+        /// <param name="isRegex">Set true if pattern is regex.</param>
+        /// <param name="escaped">If the token should be escaped.</param>
+        /// <returns>True if match</returns>
+        public bool InspectToken(Token t, string expected, bool isRegex = false, bool escaped = false)
+        {
+            if (!t.Equivalent(EOF))
+            {
+                string pattern = isRegex ? expected : Regex.Escape(expected);
+                return Regex.Match(t.Value, pattern).Success && t.IsEscaped == escaped;
             }
             return false;
         }
@@ -196,12 +232,12 @@ namespace Midnight.Lexer
         /// Checks the current token matches the expected pattern. Advances the lexer to the current one if so and returns true.
         /// </summary>
         /// <param name="expected">The pattern to match the token to.</param>
-        /// <param name="literal">Set true to escape regex characters in expected.</param>
+        /// <param name="isRegex">Set true to escape regex characters in expected.</param>
         /// <param name="escaped">If the token should be escaped.</param>
         /// <returns>True if matched and advanced. False otherwise.</returns>
-        public bool Consume(string expected, bool literal = false, bool escaped = false)
+        public bool Consume(string expected, bool isRegex = false, bool escaped = false)
         {
-            if (Inspect(expected, literal, escaped))
+            if (Inspect(expected, isRegex, escaped))
             {
                 Consume();
                 return true;
@@ -218,13 +254,13 @@ namespace Midnight.Lexer
         /// Advances the lexer position until current token matches the expected pattern.
         /// </summary>
         /// <param name="expected">Regex pattern to match token to.</param>
-        /// <param name="literal">Set true to escape regex characters in expected.</param>
+        /// <param name="isRegex">Set true to escape regex characters in expected.</param>
         /// <param name="escaped">Is the token escaped.</param>
         /// <returns>List of all tokens consumed</returns>
-        public List<Token> ConsumeUntil(string expected, bool literal = false, bool escaped = false)
+        public List<Token> ConsumeUntil(string expected, bool isRegex = false, bool escaped = false)
         {
             List<Token> res = new List<Token>();
-            while (!Inspect(expected, literal, escaped) && !InspectEOF())
+            while (!Inspect(expected, isRegex, escaped) && !InspectEOF())
             {
                 res.Add(CurrenToken);
                 mTokenPos++;
@@ -237,7 +273,7 @@ namespace Midnight.Lexer
         /// </summary>
         public void GobbleWhitespace()
         {
-            while (Inspect(@"\s") && !InspectEOF())
+            while (Inspect(@"^\s$", isRegex: true) && !InspectEOF())
             {
                 Consume();
             }
@@ -307,7 +343,7 @@ namespace Midnight.Lexer
         /// <returns></returns>
         public Dictionary<string, string> ConsumeArgList(params string[] paramnames)
         {
-            return ConsumeArgList("\\(", "\\)", ",", "\'", false, paramnames);
+            return ConsumeArgList("(", ")", ",", "\'", false, paramnames);
         }
 
         /// <summary>
@@ -317,7 +353,68 @@ namespace Midnight.Lexer
         /// <returns></returns>
         public Dictionary<string, string> ConsumeEnclosedArgList(params string[] paramnames)
         {
-            return ConsumeArgList("\\(", "\\)", ",", "\'", true, paramnames);
+            return ConsumeArgList("(", ")", ",", "\'", true, paramnames);
+        }
+
+
+
+
+        /// <summary>
+        /// Provides advanced options for parsing an argument list.
+        /// </summary>
+        /// <param name="startseq">Sequence identifying start of arglist.</param>
+        /// <param name="sepseq">Sequence identifying seperation of parameters.</param>
+        /// <param name="endseq">Sequence identifying end of arglist.</param>
+        /// <param name="encseq">Sequence identifying parameter value enclosing sequence.</param>
+        /// <param name="paramnames">List of parameters to parse. (bool: True if the parameter is enclosed, string: name of the parameter)</param>
+        /// <returns>Dictionary keyed on the parameter names with thier respective values as parsed.</returns>        
+        public Dictionary<string, string> ConsumeArgList(string startseq, string sepseq, string endseq, string encseq, params (bool enclosed, string pname)[] paramnames)
+        {
+            Dictionary<string, string> arglist = new Dictionary<string, string>();
+
+            Consume(startseq);
+
+            int pnum = 0;
+
+            foreach (var p in paramnames)
+            {
+                GobbleWhitespace();
+
+                string paramendmatch = p.enclosed ? encseq : pnum < paramnames.Length - 1 ? sepseq : endseq;
+
+                if (p.enclosed)
+                {
+                    Consume(encseq);
+                }
+
+                StringBuilder sb = new StringBuilder();
+                var ts = ConsumeUntil(paramendmatch);
+                foreach (var item in ts)
+                {
+                    sb.Append(item.Value);
+                }
+
+                string val = sb.ToString();
+                if (!p.enclosed)
+                {
+                    val = val.Trim();
+                }
+
+                arglist.Add(p.pname, val);
+
+                if (p.enclosed)
+                {
+                    Consume(encseq);
+                }
+
+                GobbleWhitespace();
+
+                Consume(pnum < paramnames.Length - 1 ? sepseq : endseq);
+
+                pnum++;
+            }
+
+            return arglist;
         }
 
 
