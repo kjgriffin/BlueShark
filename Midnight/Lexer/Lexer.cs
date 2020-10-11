@@ -102,6 +102,14 @@ namespace Midnight.Lexing
             return res;
         }
 
+        public void StartLexer(List<Token> tokens)
+        {
+            mTokenPos = 0;
+            mTokens = tokens;
+            EOF.LineNumber = LastToken.LineNumber + 1;
+            EOF.SColNumber = LastToken.SColNumber + 1;
+        }
+
 
         private int mTokenPos = 0;
         private List<Token> mTokens = new List<Token>();

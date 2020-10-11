@@ -1,4 +1,5 @@
 ﻿using Midnight.Compiler.AST;
+using Midnight.Generator;
 using Midnight.Lexing;
 using System;
 using System.Collections.Generic;
@@ -6,12 +7,12 @@ using System.Text;
 
 namespace Midnight.Compiling.AST
 {
-    class ASTProgram : IASTElement
+    class ASTProgram : IASTElement, IParsable, IGenerateSlides
     {
 
         List<IASTElement> Children = new List<IASTElement>();
 
-        void IASTElement.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
+        void IASTElementGeneratesDebugXML.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
         {
             output.Append("<ASTProgram>");
             foreach (var child in Children)
@@ -21,7 +22,20 @@ namespace Midnight.Compiling.AST
             output.Append("</ASTProgram>");
         }
 
-        IASTElement IASTElement.Parse(Lexer lexer, IASTElement parent)
+        List<Slide> IGenerateSlides.GenerateSlides()
+        {
+            List<Slide> projectSlides = new List<Slide>();
+            foreach (var child in Children)
+            {
+                if (child is IGenerateSlides)
+                {
+                    projectSlides.AddRange(((IGenerateSlides)child).GenerateSlides());
+                }
+            }
+            return projectSlides;
+        }
+
+        IASTElement IParsable.Parse(Lexer lexer, IASTElement parent)
         {
             while (!lexer.InspectEOF())
             {

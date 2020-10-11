@@ -1,4 +1,5 @@
-﻿using Midnight.Compiling;
+﻿using Midnight.Compiler.AST;
+using Midnight.Compiling;
 using Midnight.Compiling.AST;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,17 @@ namespace Midnight.Build
 
             MidnightCompiler compiler = new MidnightCompiler();
             ASTProgram program = compiler.Compile(sourcecode, verboseDebug:true);
+
+            if (program == null)
+            {
+                // failed to compiler or empty program
+
+            }
+
+            // build slides
+            var slides = ((IGenerateSlides)program).GenerateSlides();
+
+            // render slides
 
 
 

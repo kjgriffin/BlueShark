@@ -4,28 +4,30 @@ using Midnight.Lexing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Printing;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Midnight.Compiler.AST
 {
-    class ASTLiturgy_cmd : IASTElement
+    class ASTLiturgy_cmd : IASTElement, IParsable
     {
 
         private List<Token> Content = new List<Token>();
+        private List<ASTLiturgyLine> Lines = new List<ASTLiturgyLine>();
 
 
-        void IASTElement.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
+        void IASTElementGeneratesDebugXML.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
         {
             output.Append("<Liturgy>");
-            foreach (var item in Content)
+            foreach (var line in Lines)
             {
-                output.Append(item.AsText);
+                ((IASTElementGeneratesDebugXML)line).GenerateDebugXMLTree(this, output);
             }
             output.Append("</Liturgy>");
         }
 
-        IASTElement IASTElement.Parse(Lexer lexer, IASTElement parent)
+        IASTElement IParsable.Parse(Lexer lexer, IASTElement parent)
         {
             if (!lexer.Consume("Liturgy"))
             {
@@ -48,6 +50,9 @@ namespace Midnight.Compiler.AST
             }
 
             Content = lexer.ConsumeUntil("}");
+
+            LiturgySubCompiler liturgySubCompiler = new LiturgySubCompiler();
+            Lines = liturgySubCompiler.ParseLiturgyLines(Content);
 
 
             if (!lexer.Consume("}"))

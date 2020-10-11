@@ -8,13 +8,13 @@ using System.Text;
 
 namespace Midnight.Compiler.AST
 {
-    class ASTCommand : IASTElement
+    class ASTCommand : IASTElement, IParsable
     {
 
         private Token CommandName = new Token();
         private IASTElement Command;
 
-        void IASTElement.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
+        void IASTElementGeneratesDebugXML.GenerateDebugXMLTree(IASTElement parent, StringBuilder output)
         {
             output.Append($"<ASTCommand CommandName=\"{CommandName.AsText}\">");
             Command.GenerateDebugXMLTree(this, output);
@@ -23,7 +23,7 @@ namespace Midnight.Compiler.AST
 
 
 
-        IASTElement IASTElement.Parse(Lexer lexer, IASTElement parent)
+        IASTElement IParsable.Parse(Lexer lexer, IASTElement parent)
         {
             /*
                 Figure out what command it is
