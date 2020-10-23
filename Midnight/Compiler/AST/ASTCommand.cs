@@ -1,14 +1,14 @@
 ﻿using Midnight.Compiling.AST;
 using Midnight.DataTypes;
+using Midnight.Generator;
 using Midnight.Lexing;
 using System;
 using System.Collections.Generic;
-using System.Printing;
 using System.Text;
 
 namespace Midnight.Compiler.AST
 {
-    class ASTCommand : IASTElement, IParsable
+    class ASTCommand : IASTElement, IParsable, IGenerateSlides
     {
 
         private Token CommandName = new Token();
@@ -21,7 +21,10 @@ namespace Midnight.Compiler.AST
             output.Append("</ASTCommand>");
         }
 
-
+        List<Slide> IGenerateSlides.GenerateSlides()
+        {
+            return ((IGenerateSlides)Command).GenerateSlides();
+        }
 
         IASTElement IParsable.Parse(Lexer lexer, IASTElement parent)
         {

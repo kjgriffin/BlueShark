@@ -5,7 +5,6 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Windows.Media.Animation;
 
 namespace Midnight.Lexing
 {
