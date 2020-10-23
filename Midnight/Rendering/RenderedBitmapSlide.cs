@@ -9,9 +9,9 @@ namespace Midnight.Rendering
     class RenderedBitmapSlide : IRenderedSlide
     {
 
-        Bitmap img;
-        string name;
-        Dictionary<string, string> metadata = new Dictionary<string, string>();
+        public Bitmap img;
+        public string name;
+        public Dictionary<string, string> metadata = new Dictionary<string, string>();
 
         object IRenderedSlide.SlideContent => img;
 

@@ -10,6 +10,7 @@ namespace Midnight.LanguageDefinitions
         Assistant,
         Leader,
         Congregation,
+        Responder,
         None,
     }
 }

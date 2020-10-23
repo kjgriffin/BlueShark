@@ -1,6 +1,7 @@
 ﻿using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,7 @@ using System.Windows.Shapes;
 using Midnight.Build;
 using Midnight.Compiling;
 using Midnight.Parsers;
+using Xenon.Helpers;
 
 namespace Aurora
 {
@@ -25,7 +27,7 @@ namespace Aurora
     public partial class MainWindow : Window
     {
 
-        IntellisenseParser IntellisenseParser = new IntellisenseParser();        
+        IntellisenseParser IntellisenseParser = new IntellisenseParser();
 
         public MainWindow()
         {
@@ -36,6 +38,8 @@ namespace Aurora
         {
             ShowIntellisense();
         }
+
+
 
         private void ShowIntellisense()
         {
@@ -64,9 +68,9 @@ namespace Aurora
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                 {
-                    ShowIntellisense(); 
+                    ShowIntellisense();
                 }
-            } 
+            }
         }
 
         private void tbSourceSelectionChanged(object sender, RoutedEventArgs e)
@@ -78,6 +82,7 @@ namespace Aurora
         {
             MidnightBuildService buildService = new MidnightBuildService();
             buildService.BuildProject(tbSource.Text);
+            testslide.Source = ((Bitmap)buildService.renderedSlides[0].SlideContent).ConvertToBitmapImage().UriSource;
         }
     }
 }

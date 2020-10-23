@@ -17,7 +17,7 @@
 
         <Grid Grid.Row="0">
             <Menu>
-                <MenuItem Header="File">
+                <MenuItem Header="File" IsTabStop="False">
 
                 </MenuItem>
             </Menu>
@@ -25,39 +25,53 @@
 
         <Grid Grid.Row="1">
             <StackPanel Orientation="Horizontal">
-                <Button Click="btnBuildClick">Build</Button>
+                <Button Click="btnBuildClick" IsTabStop="False">Build</Button>
             </StackPanel>
         </Grid>
 
         <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="5*"></ColumnDefinition>
-                <ColumnDefinition Width="5"></ColumnDefinition>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-            <GridSplitter Grid.Column="1" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
-            <GridSplitter Grid.Column="3" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+            <Grid>
+                <TabControl>
+                    <TabItem Header="Edit"  IsTabStop="False">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition></ColumnDefinition>
+                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                <ColumnDefinition Width="5*"></ColumnDefinition>
+                                <ColumnDefinition Width="5"></ColumnDefinition>
+                                <ColumnDefinition Width="2*"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <GridSplitter IsTabStop="False" Grid.Column="1" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
+                            <GridSplitter IsTabStop="False" Grid.Column="3" ResizeDirection="Columns" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"></GridSplitter>
 
-            <Grid Grid.Column="0"></Grid>
-            <Grid Grid.Column="2">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="5*"></RowDefinition>
-                        <RowDefinition Height="5"></RowDefinition>
-                        <RowDefinition></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <GridSplitter Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch"></GridSplitter>
-                    <ScrollViewer>
-                        <TextBox Name="tbSource" PreviewKeyDown="tbSourceChangedPreviewKeyDown" SelectionChanged="tbSourceSelectionChanged" TextChanged="tbSourceChanged" Grid.Row="0" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
-                    </ScrollViewer>
-                </Grid>
-            </Grid>
-            <Grid Grid.Column="4">
-                <TextBlock Name="tbhelp"></TextBlock>
-            </Grid>
+                            <Grid Grid.Column="0"></Grid>
+                            <Grid Grid.Column="2">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="5*"></RowDefinition>
+                                        <RowDefinition Height="5"></RowDefinition>
+                                        <RowDefinition></RowDefinition>
+                                    </Grid.RowDefinitions>
+                                    <GridSplitter IsTabStop="False" Grid.Row="1" ResizeDirection="Rows" HorizontalAlignment="Stretch"></GridSplitter>
+                                    <ScrollViewer>
+                                        <TextBox IsTabStop="False" Name="tbSource" PreviewKeyDown="tbSourceChangedPreviewKeyDown" SelectionChanged="tbSourceSelectionChanged" TextChanged="tbSourceChanged" Grid.Row="0" TextWrapping="WrapWithOverflow" AcceptsReturn="True"></TextBox>
+                                    </ScrollViewer>
+                                </Grid>
+                            </Grid>
+                            <Grid Grid.Column="4">
+                                <TextBlock Name="tbhelp"></TextBlock>
+                            </Grid>
 
+                        </Grid>
+                    </TabItem>
+                    <TabItem Header="View" IsTabStop="False">
+                        <Grid>
+                            <MediaElement Name="testslide"></MediaElement>
+                        </Grid>
+                    </TabItem>
+                </TabControl>
+
+            </Grid>
         </Grid>
 
         <Grid Grid.Row="3">

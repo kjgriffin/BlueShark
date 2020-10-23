@@ -8,7 +8,7 @@ namespace Midnight.Compiler.AST
     interface IGenerateSlides
     {
 
-        public List<Slide> GenerateSlides(); 
+        public List<ISlide> GenerateSlides(); 
 
     }
 }

@@ -22,9 +22,9 @@ namespace Midnight.Compiling.AST
             output.Append("</ASTProgram>");
         }
 
-        List<Slide> IGenerateSlides.GenerateSlides()
+        List<ISlide> IGenerateSlides.GenerateSlides()
         {
-            List<Slide> projectSlides = new List<Slide>();
+            List<ISlide> projectSlides = new List<ISlide>();
             foreach (var child in Children)
             {
                 if (child is IGenerateSlides)

@@ -21,7 +21,7 @@ namespace Midnight.Compiler.AST
             output.Append("</ASTCommand>");
         }
 
-        List<Slide> IGenerateSlides.GenerateSlides()
+        List<ISlide> IGenerateSlides.GenerateSlides()
         {
             return ((IGenerateSlides)Command).GenerateSlides();
         }

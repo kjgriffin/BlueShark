@@ -10,9 +10,9 @@ namespace Midnight.Compiler.AST
     class ASTLiturgyLine : IASTElementGeneratesDebugXML
     {
 
-        string SpeakerText = "";
-        LiturgySpeakers Speaker = LiturgySpeakers.None;
-        List<Word> Words = new List<Word>();
+        public string SpeakerText = "";
+        public LiturgySpeakers Speaker = LiturgySpeakers.None;
+        public List<Word> Words = new List<Word>();
 
         public ASTLiturgyLine(string speakertext, LiturgySpeakers speaker, List<Word> word)
         {

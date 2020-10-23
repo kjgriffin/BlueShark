@@ -1,9 +1,11 @@
 ﻿using Midnight.Compiling.AST;
 using Midnight.DataTypes;
 using Midnight.Generator;
+using Midnight.Generator.Slides;
 using Midnight.Lexing;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -27,20 +29,36 @@ namespace Midnight.Compiler.AST
             output.Append("</Liturgy>");
         }
 
-        List<Slide> IGenerateSlides.GenerateSlides()
+        List<ISlide> IGenerateSlides.GenerateSlides()
         {
-            List<Slide> slides = new List<Slide>();
+            List<ISlide> slides = new List<ISlide>();
 
 
             // for now just put each line onto a slide
-            Slide s = new Slide();
+            LiturgySlide s = new LiturgySlide();
             s.Name = "liturgy";
             s.Number = 1;
-            s.Type = SlideType.Liturgy;
             s.Data["width"] = 1920;
             s.Data["height"] = 1080;
 
             s.Data["lines"] = Lines;
+
+            foreach (var line in Lines)
+            {
+                s.Text.Add(new Generator.Components.TextBlock()
+                {
+                    Background = Color.Black,
+                    BoundingBackground = Color.Black,
+                    Foreground = Color.White,
+                    Text = new Word() { Value = line.SpeakerText, Attributes = new Dictionary<string, string>()
+                    {
+                        ["fontname"] = "Arial",
+                        ["fontsize"] = "36"
+                    }, Format = TextFormat.Bold },
+                    BoundingBox = new Rectangle(0, 0, 100, 100),
+                    TextBoundingBox = new Rectangle(0, 0, 100, 100)
+                });
+            }
 
             slides.Add(s);
 
